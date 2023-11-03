@@ -31,7 +31,7 @@ export IMAGE_NAME=tps_env_parla
 export TAG=gnu9-mvapich2-sm_80
 
 
-export IMAGE=$(pwd)/$IMAGE_NAME_$TAG.sif
+export IMAGE=$(pwd)/${IMAGE_NAME}_$TAG.sif
 
 rm -f $IMAGE
 apptainer pull docker://$ORG/$IMAGE_NAME:$TAG
@@ -41,6 +41,7 @@ rm -rf build-gpu
 mkdir build-gpu && cd build-gpu
 apptainer exec  --cleanenv $IMAGE /bin/bash --login -c "../configure --enable-pybind11 --enable-gpu-cuda"
 apptainer exec  --cleanenv $IMAGE /bin/bash --login -c "make -j && make -j check TESTS=vpath.sh"
-apptainer exec $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH cat /etc/ld.so.conf.d/*.conf 
-apptainer exec $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH /bin/bash -c "ldd ./src/.lib/tps"
-apptainer exec $IMAGE LD_LIBRARY_PATH=$LD_LIBRARY_PATH /bin/bash -c "ldconfig; ldd ./src/.lib/tps"
+apptainer exec $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH cat /etc/ld.so.conf.d/tps.conf
+apptainer exec $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH ldd ./src/.libs/tps
+apptainer exec $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH /bin/bash -c "ldd ./src/.libs/tps"
+apptainer exec $IMAGE LD_LIBRARY_PATH=$LD_LIBRARY_PATH /bin/bash -c "ldconfig; ldd ./src/.libs/tps"

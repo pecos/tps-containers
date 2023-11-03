@@ -28,7 +28,7 @@ export IMAGE_NAME=tps_env_parla
 export TAG=gnu9-mvapich2-sm_80
 
 
-export IMAGE=$(pwd)/$IMAGE_NAME_$TAG.sif
+export IMAGE=$(pwd)/${IMAGE_NAME}_$TAG.sif
 
 rm -f $IMAGE
 apptainer pull docker://$ORG/$IMAGE_NAME:$TAG
@@ -37,15 +37,18 @@ export EXE=$(pwd)/tps/build-gpu/src/tps
 export PYEXE=$(pwd)/tps/build-gpu/src/tps-time-loop.py
 
 echo "#! /bin/bash" > wrapper.sh
+echo "ldconfig;" >> wrapper.sh
 echo "$EXE $@" >> wrapper.sh
 chmod +x wrapper.sh
 
 export WRAPPER=$(pwd)/wrapper.sh
 
+echo $LD_LIBRARY_PATH
+
 cd tps/build-gpu/test
+apptainer exec $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH cat /etc/ld.so.conf.d/tps.conf
 ibrun -n 1 apptainer exec --nv $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH ldd ../src/.libs/tps
 ibrun -n 1 apptainer exec --nv $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH /bin/bash -c "ldd ../src/.libs/tps"
-ibrun -n 1 apptainer exec --nv $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH /bin/bash -c "ldconfig; ldd ../src/.libs/tps"
 echo "Try $EXE"
 ibrun apptainer exec --nv $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH $EXE -run inputs/coupled-3d.ini
 echo "Try $WRAPPER"
