@@ -1,4 +1,4 @@
-ARG base_image=pecosut/tps_cuda_base:latest
+ARG base_image
 FROM ${base_image}
 MAINTAINER Umberto Villa <uvilla@oden.utexas.edu>
 
@@ -50,7 +50,7 @@ RUN yum -y install gsl-gnu9-ohpc
 
 
 # Register new libs installed into /usr/local/lib with linker
-RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/class.conf
+RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/tps.conf
 RUN ldconfig
 
 
@@ -65,11 +65,11 @@ RUN echo "module try-add gsl" >> /etc/profile.d/lmod.sh
 
 RUN . /etc/profile.d/lmod.sh \
     && module load metis phdf5 boost gsl \
-    && echo $HYPRE_LIB >> /etc/ld.so.conf.d/class.conf \
-    && echo $METIS_LIB >>  /etc/ld.so.conf.d/class.conf \
-    && echo $PHDF5_LIB >> /etc/ld.so.conf.d/class.conf \
-    && echo $BOOST_LIB >> /etc/ld.so.conf.d/class.conf \
-    && echo $GSL_LIB >> /etc/ld.so.conf.d/class.conf
+    && echo $HYPRE_LIB >> /etc/ld.so.conf.d/tps.conf \
+    && echo $METIS_LIB >>  /etc/ld.so.conf.d/tps.conf \
+    && echo $PHDF5_LIB >> /etc/ld.so.conf.d/tps.conf \
+    && echo $BOOST_LIB >> /etc/ld.so.conf.d/tps.conf \
+    && echo $GSL_LIB >> /etc/ld.so.conf.d/tps.conf
 RUN ldconfig
 
 USER test

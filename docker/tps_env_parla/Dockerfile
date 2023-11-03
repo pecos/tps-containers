@@ -1,10 +1,8 @@
-ARG base_image=pecosut/tps_gpu_env:sm_80
+ARG base_image
 FROM ${base_image}
 MAINTAINER Umberto Villa <uvilla@oden.utexas.edu>
 
 USER root
-
-ARG parla_token
 
 RUN . /etc/profile.d/lmod.sh &&\
     pip3 install --upgrade pip &&\

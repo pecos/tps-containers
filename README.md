@@ -10,6 +10,8 @@ All containers use:
 - gnu9 compiler family
 - mvapich2 compiler family
 
+To build and push all containers d
+
 ## SLURM examples
 
 See `submission_scripts` folder.
