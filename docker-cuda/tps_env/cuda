@@ -71,7 +71,7 @@ RUN . /etc/profile.d/lmod.sh \
     && module load metis phdf5 boost gsl \
     && echo $HYPRE_LIB >> /etc/ld.so.conf.d/tps.conf \
     && echo $METIS_LIB >>  /etc/ld.so.conf.d/tps.conf \
-    && echo $PHDF5_LIB >> /etc/ld.so.conf.d/tps.conf \
+    && echo $HDF5_LIB >> /etc/ld.so.conf.d/tps.conf \
     && echo $BOOST_LIB >> /etc/ld.so.conf.d/tps.conf \
     && echo $GSL_LIB >> /etc/ld.so.conf.d/tps.conf
 RUN ldconfig
