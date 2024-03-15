@@ -15,7 +15,7 @@
 #SBATCH -n 3                       # Total # of mpi tasks (should be 1 for serial)
 #SBATCH -t 00:10:00                # Run time (hh:mm:ss)
 ##SBATCH --mail-type=all            # Send email at begin and end of job
-#SBATCH -A CDA23007               # Project/Allocation name (req'd if you have more than 1)
+#SBATCH -A FTA-SUB-Ghattas               # Project/Allocation name (req'd if you have more than 1)
 ##SBATCH --mail-user=username@tacc.utexas.edu
 
 # Any other commands must follow all #SBATCH directives...
@@ -36,22 +36,9 @@ apptainer pull docker://$ORG/$IMAGE_NAME:$TAG
 export EXE=$(pwd)/tps/build-gpu/src/tps
 export PYEXE=$(pwd)/tps/build-gpu/src/tps-time-loop.py
 
-echo "#! /bin/bash" > wrapper.sh
-echo "ldconfig;" >> wrapper.sh
-echo "$EXE $@" >> wrapper.sh
-chmod +x wrapper.sh
-
-export WRAPPER=$(pwd)/wrapper.sh
-
-echo $LD_LIBRARY_PATH
 
 cd tps/build-gpu/test
-apptainer exec $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH cat /etc/ld.so.conf.d/tps.conf
-ibrun -n 1 apptainer exec --nv $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH ldd ../src/.libs/tps
-ibrun -n 1 apptainer exec --nv $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH /bin/bash -c "ldd ../src/.libs/tps"
-echo "Try $EXE"
-ibrun apptainer exec --nv $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH $EXE -run inputs/coupled-3d.ini
-echo "Try $WRAPPER"
-ibrun apptainer exec --nv $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH $WRAPPER -run inputs/coupled-3d.ini
-echo "Try $PYEXE"
-ibrun apptainer exec --nv $IMAGE env LD_LIBRARY_PATH=$LD_LIBRARY_PATH $PYEXE -run inputs/coupled-3d.ini
+echo "Test $EXE
+ibrun apptainer exec --nv $IMAGE $EXE -run inputs/coupled-3d.dtconst.ini
+echo "Test $PYEXE"
+ibrun apptainer exec --nv $IMAGE $PYEXE -run inputs/coupled-3d.dtconst.ini
