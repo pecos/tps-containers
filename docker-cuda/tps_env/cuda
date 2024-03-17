@@ -68,12 +68,14 @@ RUN echo "module try-add valgrind" >> /etc/profile.d/lmod.sh
 RUN echo "module try-add gsl" >> /etc/profile.d/lmod.sh
 
 RUN . /etc/profile.d/lmod.sh \
-    && module load metis phdf5 boost gsl \
+    && module load metis phdf5 boost gsl openblas \
     && echo $HYPRE_LIB >> /etc/ld.so.conf.d/tps.conf \
     && echo $METIS_LIB >>  /etc/ld.so.conf.d/tps.conf \
     && echo $HDF5_LIB >> /etc/ld.so.conf.d/tps.conf \
     && echo $BOOST_LIB >> /etc/ld.so.conf.d/tps.conf \
-    && echo $GSL_LIB >> /etc/ld.so.conf.d/tps.conf
+    && echo $GSL_LIB >> /etc/ld.so.conf.d/tps.conf \
+    && echo $OPENBLAS_LIB >> /etc/ld.so.conf.d/tps.conf \
+    && echo /opt/ohpc/pub/compiler/gcc/9.4.0/lib64 >> /etc/ld.so.conf.d/tps.conf
 RUN ldconfig
 
 ENV CUDA_ARCH=sm_${cuda_arch_number}

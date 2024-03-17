@@ -70,7 +70,8 @@ RUN . /etc/profile.d/lmod.sh \
     && echo $OPENBLAS_LIB >> /etc/ld.so.conf.d/tps.conf \
     && echo $HDF5_LIB >> /etc/ld.so.conf.d/tps.conf \
     && echo $BOOST_LIB >> /etc/ld.so.conf.d/tps.conf \
-    && echo $GSL_LIB >> /etc/ld.so.conf.d/tps.conf
+    && echo $GSL_LIB >> /etc/ld.so.conf.d/tps.conf \
+    && echo /opt/ohpc/pub/compiler/gcc/9.4.0/lib64 >> /etc/ld.so.conf.d/tps.conf
 RUN ldconfig
 
 USER test
