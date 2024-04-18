@@ -218,7 +218,7 @@ ENV MFEM_DIR=$mfem_prefix
 RUN source scl_source enable gcc-toolset-11 && \
     pip install cython==0.29.37 psutil scikit-build nvtx && docker-clean
 RUN source scl_source enable gcc-toolset-11 && \
-    pip install numpy scipy  matplotlib cupy-cuda12x numba multiprocess "pybind11[global]" lxcat_data_parser && docker-clean
+    pip install numpy scipy  matplotlib cupy-cuda12x sympy numba multiprocess "pybind11[global]" lxcat_data_parser && docker-clean
 
 ENV mpi4py_ver=3.1.5
 RUN source scl_source enable gcc-toolset-11 && \
