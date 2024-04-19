@@ -4,17 +4,17 @@ Locally install apptainer and define the enviromental variable `$APPTAINER_ROOT`
 
 Load the following modules
 ```
-module purge
 module load cray-mpich-abi
+module load rocm/5.7.1
 ```
 
 Pull the image
 ```
-$APPTAINER_ROOT/bin/apptainer pull docker://uvilla/tps-bte-ls6:latest
+$APPTAINER_ROOT/bin/apptainer pull docker://uvilla/tps-bte-tioga:latest
 ```
 
 Run the example
 ```
-flux run -N 2 -n 4 $APPTAINER_ROOT/bin/apptainer run --nv tps-bte-ls6_latest.sif /tps/build-gpu/src/tps-bte_0d3v.py -run input.ini
+flux run -N 2 -n 4 $APPTAINER_ROOT/bin/apptainer run --nv tps-bte-tioga_latest.sif /tps/build-gpu/src/tps-bte_0d3v.py -run input.ini
 ```
 
