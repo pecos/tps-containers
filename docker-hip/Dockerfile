@@ -3,8 +3,8 @@ FROM ${base_image}
 MAINTAINER Umberto Villa <uvilla@oden.utexas.edu>
 
 ARG make_cores=6
-ARG ROCM_VERSION=6.1
-ARG AMDGPU_VERSION=6.1
+ARG ROCM_VERSION=5.7.3
+ARG AMDGPU_VERSION=5.7.3
 
 ########################################
 # Configure ENV 
@@ -21,7 +21,7 @@ RUN chmod a+rx /usr/bin/docker-clean && docker-clean
 # Add OS updates and IB stack
 ########################################
 
-RUN dnf install -y gcc-toolset-11-toolchain
+RUN dnf install -y gcc-toolset-11-toolchain && docker-clean
 
 RUN yum install -y \
     which \
@@ -65,15 +65,15 @@ RUN ldconfig
 # Install rocm
 ########################################
 # Enable epel-release repositories
-RUN yum --enablerepo=extras install -y epel-release
+RUN yum --enablerepo=extras install -y epel-release && docker-clean
 #RUN yum --nogpgcheck install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-RUN yum config-manager --set-enabled powertools 
+RUN yum config-manager --set-enabled powertools && docker-clean
 
 RUN yum clean all
 RUN echo -e "[ROCm]\nname=ROCm\nbaseurl=https://repo.radeon.com/rocm/rhel8/$ROCM_VERSION/main\nenabled=1\ngpgcheck=0" >> /etc/yum.repos.d/rocm.repo
-RUN echo -e "[amdgpu]\nname=amdgpu\nbaseurl=https://repo.radeon.com/amdgpu/$AMDGPU_VERSION/rhel/8.9/main/x86_64\nenabled=1\ngpgcheck=0" >> /etc/yum.repos.d/amdgpu.repo
+RUN echo -e "[amdgpu]\nname=amdgpu\nbaseurl=https://repo.radeon.com/amdgpu/$AMDGPU_VERSION/rhel/8.8/main/x86_64\nenabled=1\ngpgcheck=0" >> /etc/yum.repos.d/amdgpu.repo
 
-RUN yum install -y rocm-dev hip-devel rocm-hip-runtime-devel rocm-libs rocm-hip-libraries
+RUN yum install -y rocm-dev hip-devel rocm-hip-runtime-devel rocm-libs rocm-hip-libraries && docker-clean
 ENV PATH=/opt/rocm/hcc/bin:/opt/rocm/hip/bin:/opt/rocm/bin:/opt/rocm/hcc/bin:${PATH}
 ENV LD_LIBRARY_PATH=/opt/rocm/lib::${LD_LIBRARY_PATH}
 RUN which hipcc
@@ -81,32 +81,9 @@ RUN which hipcc
 ########################################
 # Install mpi
 ########################################
-# Install mvapich2-2.3
-ARG MAJV=2
-ARG MINV=3
-ARG BV=.7
-ARG DIR=mvapich${MAJV}-${MAJV}.${MINV}${BV}
 
-# Replace with https://docs.archer2.ac.uk/user-guide/containers/
-#RUN source scl_source enable gcc-toolset-11 && \
-#    curl http://mvapich.cse.ohio-state.edu/download/mvapich/mv${MAJV}/${DIR}.tar.gz | tar -xzf - \
-#    && cd ${DIR} \
-#    && ./configure \
-#       --with-device=ch3 \
-#       --with-ch3-rank-bits=32 \
-#       --enable-fortran=yes \
-#       --enable-cxx=yes \
-#       --enable-romio \
-#       #--enable-cuda \
-#       #--with-cuda-include=/usr/local/cuda/include \
-#       #--with-cuda-libpath=/usr/local/cuda/lib64 \
-#       --enable-fast=O3 \
-#       FFLAGS="-w -fallow-argument-mismatch -O2" \
-#    #&& make -j $(($(nproc --all 2>/dev/null || echo 2) - 2)) \
-#    && make -j ${make_cores} \
-#    && make install \
-#    && cd ../ && rm -rf ${DIR} \
-#    && rm -rf /usr/local/share/doc/mvapich2
+
+# See https://docs.archer2.ac.uk/user-guide/containers/
 RUN source scl_source enable gcc-toolset-11 && \
    curl -sSLO http://www.mpich.org/static/downloads/3.4.2/mpich-3.4.2.tar.gz \
    && tar -xzf mpich-3.4.2.tar.gz -C /root \
@@ -273,7 +250,7 @@ RUN source scl_source enable gcc-toolset-11 && \
     export LD_LIBRARY_PATH=$ROCM_HOME/lib:$LD_LIBRARY_PATH && \
     pip install cupy==$cupy_ver
 
-RUN python -c "import cupy"
+RUN python3 -c "import cupy"
 
 RUN echo $INSTALL_DIR/lib > /etc/ld.so.conf.d/tps.conf
 RUN ldconfig
