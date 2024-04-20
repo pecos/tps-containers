@@ -1,6 +1,6 @@
 # Container for ls6 with tps-bte preinstalled
 
-Locally install apptainer and define the enviromental variable `$APPTAINER_ROOT` pointing at the apptainer installation directory.
+Locally install apptainer and define the environment variable `$APPTAINER_ROOT` pointing at the apptainer installation directory.
 
 Load the following modules
 ```
@@ -18,3 +18,37 @@ Run the example
 flux run -N 2 -n 4 $APPTAINER_ROOT/bin/apptainer run --nv tps-bte-tioga_latest.sif /tps/build-gpu/src/tps-bte_0d3v.py -run input.ini
 ```
 
+## Charliecloud
+
+### Installation
+Install charliecloud locally
+```
+mkdir /usr/workspace/$USER/python
+cd /usr/workspace/$USER/python
+mkdir charliecloud-tioga 
+cd charliecloud-tioga
+python3 -m venv --system-site-packages . 
+source ./bin/activate 
+pip install --upgrade pip 
+pip install requests 
+mkdir git
+cd git
+git clone https://github.com/hpc/charliecloud
+cd charliecloud
+./autogen.sh 
+./configure
+make
+```
+
+Set up environment
+```
+cd /usr/workspace/$USER/python/charliecloud-tioga
+source ./bin/activate
+cd git/charliecloud/bin
+export PATH=$PWD:$PATH
+```
+
+```
+ch-image pull registry.hub.docker.com/uvilla/tps-bte-tioga:latest
+ch-convert tps-bte-tioga:latest tps-bte-tioga.sqfs
+```
