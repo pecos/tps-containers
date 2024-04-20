@@ -51,6 +51,7 @@ export PATH=$PWD:$PATH
 
 ```
 ch-image pull registry.hub.docker.com/uvilla/tps-bte-tioga:latest
-ch-convert tps-bte-tioga:latest tps-bte-tioga.sqfs
-`flux run -N 2 --tasks-per-node=2 ch-run -b /var/tmp/$USER:/var/tmp/$USER --set-env tps-bte-tioga -- /tps/build-gpu/src/tps-bte_0d3v.py -run input.ini`
+ch-convert registry.hub.docker.com/uvilla/tps-bte-tioga:lastest tps-bte-tioga.sqfs
+ch-convert tps-bte-tioga.sqfs /usr/workspace/villa13/apptainer/tps-containers/docker-hip/tps-bte-tioga-dir
+flux run -N 1 -n 1 ch-run -b /var/tmp/$USER:/var/tmp/$USER --set-env -w /usr/workspace/villa13/apptainer/tps-containers/docker-hip/tps-bte-tioga-dir  -- /tps/build-gpu/src/tps -run /input.ini
 ```
