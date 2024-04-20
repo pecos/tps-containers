@@ -8,6 +8,7 @@ module load cray-mpich-abi
 module load rocm/5.7.1
 ```
 
+## Apptainer
 Pull the image
 ```
 $APPTAINER_ROOT/bin/apptainer pull docker://uvilla/tps-bte-tioga:latest
@@ -51,4 +52,5 @@ export PATH=$PWD:$PATH
 ```
 ch-image pull registry.hub.docker.com/uvilla/tps-bte-tioga:latest
 ch-convert tps-bte-tioga:latest tps-bte-tioga.sqfs
+`flux run -N 2 --tasks-per-node=2 ch-run -b /var/tmp/$USER:/var/tmp/$USER --set-env tps-bte-tioga -- /tps/build-gpu/src/tps-bte_0d3v.py -run input.ini`
 ```
