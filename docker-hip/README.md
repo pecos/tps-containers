@@ -5,18 +5,20 @@ Locally install apptainer and define the environment variable `$APPTAINER_ROOT` 
 Load the following modules
 ```
 module load cray-mpich-abi
-module load rocm/5.7.1
+module load rocm/5.4.1
 ```
 
 ## Apptainer
 Pull the image
 ```
-$APPTAINER_ROOT/bin/apptainer pull docker://uvilla/tps-bte-tioga:latest
+singularity pull docker://uvilla/tps-bte-tioga:el8-5.4.1
 ```
 
 Run the example
 ```
-flux run -N 2 -n 4 $APPTAINER_ROOT/bin/apptainer run --nv tps-bte-tioga_latest.sif /tps/build-gpu/src/tps-bte_0d3v.py -run input.ini
+cp input.ini $HOME/
+cp restart_output-plasma.sol.h5 $HOME/
+flux run -N 2 -n 4 $APPTAINER_ROOT/bin/apptainer run --nv tps-bte-tioga_el8-5.4.1.sif /tps/build-gpu/src/tps-bte_0d3v.py -run input.ini
 ```
 
 ## Charliecloud
