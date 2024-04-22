@@ -1,0 +1,23 @@
+ARG base_image=uvilla/tps-bte-env:el8-rocm5.4.1
+
+FROM ${base_image}
+MAINTAINER Umberto Villa <uvilla@oden.utexas.edu>
+
+ARG make_cores=6
+ARG hip_arch=gfx90a
+
+RUN git clone https://github.com/pecos/tps \
+    && cd tps \
+    && git checkout boltzmann-integration \
+    && git clone https://github.com/ut-padas/boltzmann \
+    && git clone https://github.com/pecos/tps-inputs \
+    && cd tps-inputs \
+    && git checkout boltzmann-integration
+
+RUN cd tps \
+    && ./bootstrap \
+    && mkdir build-gpu \
+    && cd build-gpu \
+    && ../configure HIP_ARCH=$hip_arch --disable-valgrind --enable-gpu-hip --enable-pybind11 CPPFLAGS=-I$(python3 -c "import pybind11; print(pybind11.get_include())") \
+    && make -j $make_cores \
+    && make -j $make_cores  check TESTS="vpath.sh"
