@@ -1,4 +1,4 @@
-# Container for cray with tps-bte preinstalled
+# Container for Tioga with tps-bte preinstalled
 
 Load the following modules
 ```
