@@ -28,8 +28,7 @@ RUN yum -y install gcc gcc-c++
 RUN yum -y install valgrind-ohpc
 RUN yum -y install boost-gnu9-${mpicompiler}-ohpc
 
-RUN yum -y install python38-pip
-RUN pip3 install matplotlib
+RUN yum -y install python3.11 python3.11-devel python3.11-pip
 
 RUN yum -y install procps-ng
 RUN yum -y install diffutils
@@ -43,7 +42,6 @@ RUN yum -y install bc
 RUN yum -y install clang-tools-extra
 RUN yum -y install zlib-devel
 RUN yum -y install libcurl-devel
-RUN yum -y install python38-devel
 RUN yum -y install perl-Data-Dumper
 RUN yum -y install flex
 RUN yum -y install bison
@@ -55,12 +53,13 @@ RUN pip3 install lxcat_data_parser
 
 RUN . /etc/profile.d/lmod.sh \
     && pip3 install mpi4py \
-    && pip3 install numpy \
+    && pip3 install "numpy<2" \
     && pip3 install scipy \
     && pip3 install matplotlib \
     && pip3 install cupy-cuda11x \
     && pip3 install numba \
-    && pip3 install multiprocess
+    && pip3 install multiprocess \
+    && pip3 install h5py
 
 # build doxygen from scratch (no package... really?)
 ARG make_cores=6
